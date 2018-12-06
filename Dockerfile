@@ -3,8 +3,6 @@ FROM java:8-jre-alpine
 LABEL maintainer="Sangram Reddy <reddy.horcrux@gmail.com>"
 LABEL application="dg-post-service"
 
-RUN mkdir /home/app
-
 COPY ./target/PostService-*.jar /home/app/
 
 COPY ./scripts/button.sh /home/app/
