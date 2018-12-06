@@ -1,0 +1,36 @@
+# Generics
+server:
+  port: 8443
+
+  ssl:
+    enabled: true
+    key-store: classpath:ssl/dataglitter-keystore.p12
+    key-store-password: 09e51A0310
+    key-alias: dataglitter
+    key-password: 09e51A0310
+    key-store-type: pkcs12
+    enabled-protocols: [TLSv1.1, TLSv1.2]
+
+# Database & Multipart
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: dataglitter
+  http:
+    multipart:
+        max-file-size: 10MB
+        max-request-size: 20MB
+
+# File Storage
+file:
+  uploadDir: /uploads/posts
+  profilePics: /uploads/profilePics
+
+aws:
+  s3:
+    region: eu-west-1
+    assetBucketName: dataglitter-assets
+    profile: profile/
+    post: post/
