@@ -1,6 +1,7 @@
 package io.dataglitter.PostService.security;
 
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,13 +16,15 @@ import java.util.ArrayList;
 
 import static io.dataglitter.PostService.security.SecurityConstants.HEADER_STRING;
 import static io.dataglitter.PostService.security.SecurityConstants.TOKEN_PREFIX;
-import static io.dataglitter.PostService.security.SecurityConstants.SECRET;
 
 /**
  * Created by reddys on 14/12/2017.
  */
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+
+    @Value("${server.jwt.secret}")
+    private String secret;
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
@@ -45,7 +48,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         if (token != null) {
             // parse the token.
             String user = Jwts.parser()
-                    .setSigningKey(SECRET)
+                    .setSigningKey(secret)
                     .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                     .getBody()
                     .getSubject();

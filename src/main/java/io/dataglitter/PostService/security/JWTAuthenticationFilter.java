@@ -5,6 +5,7 @@ import io.dataglitter.PostService.document.ApplicationUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,9 @@ import static io.dataglitter.PostService.security.SecurityConstants.*;
  * Created by reddys on 14/12/2017.
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    @Value("${server.jwt.secret}")
+    private String secret;
 
     private AuthenticationManager authenticationManager;
 
@@ -58,7 +62,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = Jwts.builder()
                 .setSubject(((User) auth.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }

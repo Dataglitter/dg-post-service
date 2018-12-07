@@ -5,11 +5,14 @@ server:
   ssl:
     enabled: true
     key-store: classpath:ssl/dataglitter-keystore.p12
-    key-store-password: 09e51A0310
+    key-store-password:
     key-alias: dataglitter
-    key-password: 09e51A0310
+    key-password:
     key-store-type: pkcs12
     enabled-protocols: [TLSv1.1, TLSv1.2]
+
+  jwt:
+    secret: changeitinprod
 
 # Database & Multipart
 spring:
