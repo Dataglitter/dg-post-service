@@ -22,7 +22,6 @@ dist/
 nbdist/
 .nb-gradle/
 **/*.crt
-**/*.p12
 
 target/
 pom.xml.tag
