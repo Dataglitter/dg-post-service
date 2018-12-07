@@ -25,20 +25,6 @@ steps:
 - checkout: self
   persistCredentials: true
 
-- script: |
-    git clone https://github.com/elasticdog/transcrypt.git
-    cd transcrypt/
-    sudo ln -s ${PWD}/transcrypt /usr/local/bin/transcrypt
-    cd ../
-    ls -ltrha
-  displayName: 'Environment Preperation'
-
-- script: |
-    transcrypt --yes -c aes-256-cbc -p '$TRANSCRYPT_KEY'
-  env:
-    TRANSCRYPT_KEY: $(transcryptKey)
-  displayName: 'Decrypting secrets'
-
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
