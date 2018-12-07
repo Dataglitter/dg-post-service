@@ -1,0 +1,74 @@
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+trigger:
+  # batch: true
+  branches:
+    include:
+    - master
+    - development
+    - feature/*
+
+pr:
+  branches:
+    include:
+    - master
+    - development
+
+variables:
+  imageName: 'dg-post-service'
+  major: 1
+  minor: 4
+  patch: $(Build.BuildId)
+
+steps:
+- checkout: self
+  persistCredentials: true
+
+- script: |
+    git clone https://github.com/elasticdog/transcrypt.git
+    cd transcrypt/
+    sudo ln -s ${PWD}/transcrypt /usr/local/bin/transcrypt
+    cd ../
+    ls -ltrha
+  displayName: 'Environment Preperation'
+
+- script: |
+    transcrypt --yes -c aes-256-cbc -p '$TRANSCRYPT_KEY'
+  env:
+    TRANSCRYPT_KEY: $(transcryptKey)
+  displayName: 'Decrypting secrets'
+
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.10'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    goals: 'package'
+  displayName: 'Test & Build the artifact'
+
+- script: |
+    docker build -t $(dockerId)/$(imageName):v$(major).$(minor).$(patch) .
+  displayName: 'Build Docker image'
+
+- script: |
+    docker login -u $(dockerId) -p $DOCKER_PASSWORD
+    docker push $(dockerId)/$(imageName):v$(major).$(minor).$(patch)
+    docker tag $(dockerId)/$(imageName):v$(major).$(minor).$(patch) $(dockerId)/$(imageName):latest
+    docker push $(dockerId)/$(imageName):latest
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  env:
+    DOCKER_PASSWORD: $(dockerPassword)
+  displayName: 'Push Docker image'
+
+# - script: |
+#     git config --global user.email "reddy.horcrux@gmail.com"
+#     git config --global user.name "Sangram Reddy"
+#     git tag -a v$(major).$(minor).$(patch) -m "Version increment:$(major).$(minor).$(patch)"
+#     git push origin v$(major).$(minor).$(patch)
+#   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+#   displayName: 'Tagging the build'
