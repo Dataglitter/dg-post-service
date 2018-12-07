@@ -19,7 +19,7 @@ variables:
   imageName: 'dg-post-service'
   major: 1
   minor: 4
-  patch: $(Build.BuildId)
+  patch: 5 # $(Build.BuildId)
 
 steps:
 - checkout: self
