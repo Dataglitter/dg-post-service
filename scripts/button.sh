@@ -1,4 +1,4 @@
-sleep 60
+sleep 45
 
 java -jar /home/app/PostService.jar \
     --spring.data.mongodb.host=$MONGO \
