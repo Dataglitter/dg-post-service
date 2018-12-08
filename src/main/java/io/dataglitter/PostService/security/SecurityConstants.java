@@ -20,4 +20,5 @@ public class SecurityConstants {
     public static final String USER_GET_CHECK_BY_EMAIL = "/api/application-user/by-email";
     public static final String CSR_TXT = "/.well-known/pki-validation/*";
     public static final String INDEX = "/index.html";
+    public static final String JWT_SECRET = "JWT_SECRET";
 }

@@ -19,7 +19,7 @@ variables:
   imageName: 'dg-post-service'
   major: 1
   minor: 4
-  patch: 5 # $(Build.BuildId)
+  patch: 6 # $(Build.BuildId)
 
 steps:
 - checkout: self
@@ -51,10 +51,10 @@ steps:
     DOCKER_PASSWORD: $(dockerPassword)
   displayName: 'Push Docker image'
 
-# - script: |
-#     git config --global user.email "reddy.horcrux@gmail.com"
-#     git config --global user.name "Sangram Reddy"
-#     git tag -a v$(major).$(minor).$(patch) -m "Version increment:$(major).$(minor).$(patch)"
-#     git push origin v$(major).$(minor).$(patch)
-#   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-#   displayName: 'Tagging the build'
+- script: |
+    git config --global user.email "reddy.horcrux@gmail.com"
+    git config --global user.name "Sangram Reddy"
+    git tag -a v$(major).$(minor).$(patch) -m "Version increment:$(major).$(minor).$(patch)"
+    git push origin v$(major).$(minor).$(patch)
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  displayName: 'Tagging the build'

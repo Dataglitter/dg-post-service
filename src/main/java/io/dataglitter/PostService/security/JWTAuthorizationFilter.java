@@ -1,7 +1,8 @@
 package io.dataglitter.PostService.security;
 
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,16 +16,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static io.dataglitter.PostService.security.SecurityConstants.HEADER_STRING;
+import static io.dataglitter.PostService.security.SecurityConstants.JWT_SECRET;
 import static io.dataglitter.PostService.security.SecurityConstants.TOKEN_PREFIX;
 
 /**
  * Created by reddys on 14/12/2017.
  */
-
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    @Value("${server.jwt.secret}")
-    private String secret;
+    private Logger log = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
@@ -44,11 +44,14 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(req, res);
     }
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+
+        log.info("Using secret: {}", System.getenv(JWT_SECRET));
+
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
             // parse the token.
             String user = Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(System.getenv(JWT_SECRET))
                     .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                     .getBody()
                     .getSubject();
