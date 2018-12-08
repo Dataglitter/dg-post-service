@@ -25,20 +25,6 @@ steps:
 - checkout: self
   persistCredentials: true
 
-- script: |
-    git clone https://github.com/elasticdog/transcrypt.git
-    cd transcrypt/
-    sudo ln -s ${PWD}/transcrypt /usr/local/bin/transcrypt
-    cd ../
-    ls -ltrha
-  displayName: 'Environment Preperation'
-
-- script: |
-    transcrypt --yes -c aes-256-cbc -p '$TRANSCRYPT_KEY'
-  env:
-    TRANSCRYPT_KEY: $(transcryptKey)
-  displayName: 'Decrypting secrets'
-
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
@@ -65,10 +51,10 @@ steps:
     DOCKER_PASSWORD: $(dockerPassword)
   displayName: 'Push Docker image'
 
-- script: |
-    git config --global user.email "reddy.horcrux@gmail.com"
-    git config --global user.name "Sangram Reddy"
-    git tag -a v$(major).$(minor).$(patch) -m "Version increment:$(major).$(minor).$(patch)"
-    git push origin v$(major).$(minor).$(patch)
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  displayName: 'Tagging the build'
+# - script: |
+#     git config --global user.email "reddy.horcrux@gmail.com"
+#     git config --global user.name "Sangram Reddy"
+#     git tag -a v$(major).$(minor).$(patch) -m "Version increment:$(major).$(minor).$(patch)"
+#     git push origin v$(major).$(minor).$(patch)
+#   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+#   displayName: 'Tagging the build'
